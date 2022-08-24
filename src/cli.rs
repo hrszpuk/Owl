@@ -17,23 +17,23 @@ impl Cli {
 
         // Check for -Syu
         match self.flag.as_str() {
-            "-Syu"|"update" => {
-                if self.arguments.len() < 1 {
-                    package_manager::update();
-                } else {
-                    package_manager::update();
-                    package_manager::sync(self.arguments.clone())
-                }
-            }
-            "-h"|"--help"|"help" => Cli::help(),
-            "-S"|"get" =>
-                if self.arguments.len() < 1 {
-                    Cli::about("CLI[process_flags]",
-                        format!("Flag \"{}\" requires an argument of <package>!", self.flag.trim().bold(), )
-                    );
-                } else { package_manager::sync(self.arguments.clone()) }
-
+            "-Syu"|"update" => package_manager::update(),
+            "-S"|"get" => package_manager::sync(self.arguments.clone()),
             "-R"|"remove"|"rm" => package_manager::remove(self.arguments.clone()),
+            "-Rd"|"eliminate" => package_manager::eliminate(self.arguments.clone()),
+            "-Rrd"|"clean" => package_manager::clean(),
+            "-Ss"|"search"|"find" => package_manager::search(self.arguments.clone()),
+            "-Q"|"packages" => package_manager::list_packages(),
+            "-Qd" => package_manager::list_dependencies(),
+            "-Qds" => package_manager::list_package_dependencies(self.arguments.clone()),
+            "deps" => if self.arguments.len() < 1 {
+                package_manager::list_dependencies();
+            } else {
+                package_manager::list_package_dependencies(self.arguments.clone());
+            }
+            "-U"|"install" => package_manager::local_install(self.arguments.clone()),
+            "-I"|"info" => package_manager::info(self.arguments.clone()),
+            "-h"|"--help"|"help" => Cli::help(),
             _ => Cli::abort(
                 "CLI[process_flags]",
             format!("Could not process flag \"{}\" as it does not exist!",
@@ -48,7 +48,8 @@ impl Cli {
             "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}\
             {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}\
             {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}\
-            {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}",
+            {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}\
+            {}{}{}{}{}{}{}{}",
             ":: Owl is a RPS CLI App!\n".bold(),
             ":: You can add, remove, update, and search packages using Owl!\n\n",
             "==>".bright_green()," Usage: owl <flag> [option]\n\n".bold(),
@@ -58,7 +59,8 @@ impl Cli {
             "  ","update".magenta().underline(),"    |"," -Syu".magenta(),"             = Update Installed Packages\n".bold(),
             "  ","get".blue().underline(),"       |"," -S".blue(),"    ",name,"     = Install a new package\n".bold(),
             "  ","remove".red().underline(),"    |"," -R".red(),"    ",name,"     = Remove a package\n".bold(),
-            "  ","eliminate".red().underline()," |"," -Rs".red(),"   ",name,"     = Remove a package and its dependencies\n".bold(),
+            "  ","eliminate".red().underline()," |"," -Rd".red(),"   ",name,"     = Remove a package and its dependencies\n".bold(),
+            "  ","clean".bright_cyan().underline()," |"," -Rrd".bright_cyan(),"   ",name,"     = Remove any redundant dependencies\n".bold(),
             "  ","search".white().underline(),"    |"," -Ss".white(),"   ",name,"     = Search for a package\n".bold(),
             "  ","deps".bright_red().underline(),"      |"," -Qds".bright_red(),"  ",name,"     = List dependencies of a package\n".bold(),
             "  ","deps".bright_red().underline(),"      |"," -Qd".bright_red(),"         ","     = List all dependencies\n".bold(),
@@ -72,8 +74,7 @@ impl Cli {
 
     pub fn abort(sector: &str, message: String) {
         println!(
-            "{}{}{}{}{}",
-            ":: Issue raised in ",sector.purple(),"!\n",
+            ":: Issue raised in {}!\n{}{}", sector.purple(),
             "[ABORT] ".red(), message.bright_red(),
         );
         std::process::exit(0);
