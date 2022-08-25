@@ -1,29 +1,45 @@
-use crate::package_manager;
-use colored::Colorize;
+use crate::package_manager;  // For calling package manager functions
+use colored::Colorize;  // For showing colour in the console
 
+// The Cli struct is a super easy way to compact the flags and arguments
 pub struct Cli {
-    pub flag: String,
-    pub arguments: Vec<String>,
+    pub flag: String,               // Flags: -S -Syu deps install ..etc..
+    pub arguments: Vec<String>,     // Arguments: package1 package2 path/to/file ..etc..
 }
 
 impl Cli {
+    // Syntax sugar for constructing our Cli
     pub fn new(flag: String, arguments: Vec<String>) -> Cli {
         Cli { flag, arguments }
     }
 
+    // This function processes the command line flags and calls the corresponding package manager
+    // function. Here we handle both pacman-like flags (-S, -R, -Syu, etc) and rps-cli-like flags
+    // such as update, remove, get, search.
     pub fn process_flags(&self) {
 
         println!(":: Processing flags...");
 
-        // Check for -Syu
         match self.flag.as_str() {
+            // Basic necessity commands
+            // [NOTE] For basic usage like updating, adding, and removing, packages.
             "-Syu"|"update" => package_manager::update(),
             "-S"|"get" => package_manager::sync(self.arguments.clone()),
             "-R"|"remove"|"rm" => package_manager::remove(self.arguments.clone()),
+
+            // Advanced removal commands
+            // [NOTE] For removing dependencies
             "-Rd"|"eliminate" => package_manager::eliminate(self.arguments.clone()),
             "-Rrd"|"clean" => package_manager::clean(),
+
+            // Advanced searching/information commands
+            // [NOTE] For searching and getting information on packages
             "-Ss"|"search"|"find" => package_manager::search(self.arguments.clone()),
-            "-Q"|"packages" => package_manager::list_packages(),
+            "-I"|"info" => package_manager::info(self.arguments.clone()),
+
+            // Advanced viewing commands
+            // [NOTE] for viewing packages and dependencies
+            "-Q"|"packages"|"list" => package_manager::list_packages(),
             "-Qd" => package_manager::list_dependencies(),
             "-Qds" => package_manager::list_package_dependencies(self.arguments.clone()),
             "deps" => if self.arguments.len() < 1 {
@@ -31,19 +47,27 @@ impl Cli {
             } else {
                 package_manager::list_package_dependencies(self.arguments.clone());
             }
+
+            // Install local packages (for packages not uploaded to rps).
             "-U"|"install" => package_manager::local_install(self.arguments.clone()),
-            "-I"|"info" => package_manager::info(self.arguments.clone()),
+
+            // Help commands
             "-h"|"--help"|"help" => Cli::help(),
+
+            // This is for when the flag given doesn't exist.
             _ => Cli::abort(
                 "CLI[process_flags]",
-            format!("Could not process flag \"{}\" as it does not exist!",
+            format!("Could not process flag \"{}\" as it does not match any known pattern!",
                     self.flag.trim().bold())
             ),
         }
     }
 
+    // Shows help message
     pub fn help() {
         let name = "<name>".bold();
+
+        // This is a really hacky wacky way of doing it -- should probably clean this up
         println!(
             "{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}\
             {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}\
@@ -72,6 +96,7 @@ impl Cli {
         );
     }
 
+    // For exiting the program and telling the user what went wrong
     pub fn abort(sector: &str, message: String) {
         println!(
             ":: Issue raised in {}!\n{}{}", sector.purple(),
