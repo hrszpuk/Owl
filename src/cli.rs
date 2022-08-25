@@ -84,7 +84,7 @@ impl Cli {
             "  ","get".blue().underline(),"       |"," -S".blue(),"    ",name,"     = Install a new package\n".bold(),
             "  ","remove".red().underline(),"    |"," -R".red(),"    ",name,"     = Remove a package\n".bold(),
             "  ","eliminate".red().underline()," |"," -Rd".red(),"   ",name,"     = Remove a package and its dependencies\n".bold(),
-            "  ","clean".bright_cyan().underline()," |"," -Rrd".bright_cyan(),"   ",name,"     = Remove any redundant dependencies\n".bold(),
+            "  ","clean".bright_cyan().underline(),"     |"," -Rrd".bright_cyan(),"   ",name,"    = Remove any redundant dependencies\n".bold(),
             "  ","search".white().underline(),"    |"," -Ss".white(),"   ",name,"     = Search for a package\n".bold(),
             "  ","deps".bright_red().underline(),"      |"," -Qds".bright_red(),"  ",name,"     = List dependencies of a package\n".bold(),
             "  ","deps".bright_red().underline(),"      |"," -Qd".bright_red(),"         ","     = List all dependencies\n".bold(),
