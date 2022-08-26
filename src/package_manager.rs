@@ -3,7 +3,7 @@ use crate::api;
 // Downloads a package, installs it, and adds it to the database.
 // Flag: -S | get
 pub fn sync(args: Vec<String>) {
-
+    api::download(&args[0], &args[1]).expect("TODO: panic message");
 }
 
 // Updates the local package index, checks and updates outdated packages.
