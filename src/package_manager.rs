@@ -1,8 +1,9 @@
+use crate::api;
 
 // Downloads a package, installs it, and adds it to the database.
 // Flag: -S | get
 pub fn sync(args: Vec<String>) {
-
+    api::download(&args[0], &args[1]).expect("TODO: panic message");
 }
 
 // Updates the local package index, checks and updates outdated packages.
@@ -38,7 +39,7 @@ pub fn search(args: Vec<String>) {
 // Lists all the installed packages, including author, version, description, etc.
 // Flag: -Q | packages | list
 pub fn list_packages() {
-
+    api::list().expect("TODO");
 }
 
 // Lists all the installed dependencies, including what packages require them.
@@ -61,5 +62,5 @@ pub fn local_install(args: Vec<String>) {
 // Show information about a package
 // Flag: -I | info
 pub fn info(args: Vec<String>) {
-
+    api::lookup(&args[0]).expect("TODO: panic message");
 }
