@@ -32,27 +32,27 @@ pub fn lookup(package: &String) -> Result<Package> {
 // Internally, this makes a call to /api/download/{package}.
 // It's important to know this function does not handle.
 // Placing the file or extracting it in anyway, only downloading the files.
-pub fn download(package: &String, path: &String) -> Result<&mut File> {
+pub fn download(package: &String, path: &String) -> Result<File> {
     let url = format!("https://rps.rect.ml/api/download/{}", package.trim());
     let mut res = reqwest::blocking::get(url)?;
     let mut file = File::create(path)?;
     let mut content =  res.bytes()?;
 
     file.write_all(&*content).expect("TODO: panic message");
-    Ok(&mut file)
+    Ok(file)
 }
 
 // This directly downloads the package from the RPS file system.
 // This avoids the /api/download/{package} call and takes the file from the
 // RPS File System instead: rpsf.rect.ml/{package}
-pub fn direct_download(package: &String, path: &String) -> Result<&mut File> {
+pub fn direct_download(package: &String, path: &String) -> Result<File> {
     let url = format!("https://rpsf.rect.ml/{}", package);
     let mut res = reqwest::blocking::get(url)?;
     let mut file = File::create(path)?;
     let mut content = res.bytes()?;
 
     file.write_all(&*content).expect("ERROR MESSAGE");
-    Ok(&mut file)
+    Ok(file)
 }
 
 // Calls RPS API to fetch the online package index.
