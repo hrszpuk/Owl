@@ -104,6 +104,21 @@ impl Cli {
         );
         std::process::exit(0);
     }
+
+    // Make a note
+    pub fn note(message: String) {
+        println!("{} {}","[NOTE]".blue(), message);
+    }
+
+    // Send general information
+    pub fn info(message: String) {
+        println!("{} {}", "[INFO]".yellow(), message);
+    }
+
+    // Send an issue (that isn't serious)
+    pub fn issue(message: String) {
+        println!("{} {}", "[ISSUE]".bright_red(), message);
+    }
 }
 
 
