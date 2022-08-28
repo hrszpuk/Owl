@@ -6,7 +6,11 @@ use crate::cli::Cli;
 mod cli;
 mod package_manager;
 mod api;
+mod database;
+mod utils;
 
+const OWL_DATABASE: &str = ".owl.db";
+const PACKAGES_PATH: &str = "~/.rect/packages";
 
 fn main() {
     // Fetching command line arguments and showing the help message if only "owl" is used.
