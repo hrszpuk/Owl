@@ -1,5 +1,5 @@
 <h1 align="center">Owl</h1>
-<p align="center">[WIP] :owl: Owl is a pacman-like ReCT Package System CLI application :owl:</p>
+<p align="center">[DEPRECIATED] :owl: Owl is a pacman-like ReCT Package System CLI application :owl:</p>
 
 <p align="center">
 <a href="./LICENSE.md"><img src="https://img.shields.io/badge/license-GPL-green.svg"></a>
@@ -13,6 +13,9 @@ Owl is a CLI application to easily install ReCT packages from https://rps.rect.m
 Owl is inspired by Arch Linux package manager, pacman.
 Packages can be installed, removed, updated, and more!
 </p>
+
+# ⚠️ THIS REPOSITORY IS DEPRECIATED ⚠️
+This repository has been publicly archived as the ReCT programming language has ceased development (and other project overtook this one).
 
 An example of basic owl usage is shown below:
 ```sh
